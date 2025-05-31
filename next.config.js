@@ -16,6 +16,8 @@ const nextConfig = {
       'images.unsplash.com',
       'via.placeholder.com',
       'example.com',
+      // Add your domain here
+      'gsonsonline.co.in', // Replace with your actual domain
       // Add your image domains here
     ],
     unoptimized: false, // Set to true if you want to disable image optimization
@@ -32,6 +34,10 @@ const nextConfig = {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
   
+  // Production optimizations
+  poweredByHeader: false,
+  compress: true,
+  
   // Redirects (optional)
   async redirects() {
     return [
@@ -39,7 +45,7 @@ const nextConfig = {
     ];
   },
   
-  // Headers (optional)
+  // Headers for security and CORS
   async headers() {
     return [
       {
@@ -47,7 +53,9 @@ const nextConfig = {
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
-            value: '*',
+            value: process.env.NODE_ENV === 'production' 
+              ? 'https://gsonsonline.co.in' // Replace with your actual domain
+              : '*',
           },
           {
             key: 'Access-Control-Allow-Methods',
@@ -56,6 +64,23 @@ const nextConfig = {
           {
             key: 'Access-Control-Allow-Headers',
             value: 'Content-Type, Authorization',
+          },
+        ],
+      },
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin',
           },
         ],
       },
