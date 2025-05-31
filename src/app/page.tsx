@@ -12,8 +12,8 @@ export default function HomePage() {
               Your Complete
               <span className="block text-yellow-300">Product Catalogue</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-purple-100 max-w-3xl mx-auto">
-              Discover 100+ premium products across 20+ categories. Available on all major e-commerce platforms.
+            <p className="text-xl text-purple-100 max-w-3xl mx-auto mb-8">
+              Discover amazing products from top brands across India. From electronics to fashion, we&apos;ve got everything you need.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link

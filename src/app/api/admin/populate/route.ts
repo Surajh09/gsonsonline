@@ -34,8 +34,9 @@ export async function POST(request: NextRequest) {
       }
       body = JSON.parse(text);
     } catch (jsonError) {
+      console.error('JSON parsing error:', jsonError);
       return NextResponse.json(
-        { success: false, error: 'Invalid JSON format. Please check your request body.' },
+        { success: false, message: 'Invalid JSON format' },
         { status: 400 }
       );
     }
@@ -63,7 +64,7 @@ export async function POST(request: NextRequest) {
     for (const categoryData of categories) {
       try {
         // Check if category already exists
-        let existingCategory = await Category.findOne({ name: categoryData.name });
+        const existingCategory = await Category.findOne({ name: categoryData.name });
         
         if (!existingCategory) {
           const category = new Category({
@@ -121,6 +122,7 @@ export async function POST(request: NextRequest) {
 
     // Update category item counts
     for (const [categoryName, categoryId] of categoryMap) {
+      console.log(`Updating count for category: ${categoryName}`);
       const productCount = await Product.countDocuments({ category: categoryId });
       await Category.findByIdAndUpdate(categoryId, { no_of_items: productCount });
     }

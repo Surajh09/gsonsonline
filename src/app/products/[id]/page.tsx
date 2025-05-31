@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, ExternalLink, ShoppingCart, Package, Star } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Package, ShoppingCart } from 'lucide-react';
 
 interface Product {
   _id: string;

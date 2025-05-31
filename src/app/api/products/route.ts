@@ -7,13 +7,14 @@ export async function GET(request: NextRequest) {
     await connectDB();
     
     const { searchParams } = new URL(request.url);
-    const category = searchParams.get('category');
-    const search = searchParams.get('search');
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '12');
+    const search = searchParams.get('search') || '';
+    const category = searchParams.get('category') || '';
     const skip = (page - 1) * limit;
     
-    let query: any = {};
+    // Build query object
+    const query: Record<string, unknown> = {};
     
     // Filter by category if provided
     if (category) {

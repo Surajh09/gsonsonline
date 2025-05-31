@@ -49,8 +49,8 @@ export default function CategoriesPage() {
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Product Categories
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              Explore our diverse range of product categories and find exactly what you're looking for
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Discover our wide range of product categories. From electronics to fashion, we&apos;ve got everything you need.
             </p>
             
             {/* Search Bar */}

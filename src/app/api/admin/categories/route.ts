@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   // Block access in production
   if (!isDevelopment()) {
     return NextResponse.json(

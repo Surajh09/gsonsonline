@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { Search, Menu, X, ShoppingBag } from 'lucide-react';
+import { Search, Menu, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function Navbar() {

@@ -157,6 +157,7 @@ export default function AdminUploadPage() {
       }
     } catch (error) {
       showMessage('error', 'Network error. Please try again.');
+      console.error('Error creating product:', error);
     } finally {
       setLoading(false);
     }
@@ -195,6 +196,7 @@ export default function AdminUploadPage() {
       }
     } catch (error) {
       showMessage('error', 'Network error. Please try again.');
+      console.error('Error creating category:', error);
     } finally {
       setLoading(false);
     }
