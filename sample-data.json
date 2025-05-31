@@ -1,0 +1,279 @@
+{
+  "categories": [
+    {
+      "name": "Electronics",
+      "description": "Latest electronic gadgets and devices"
+    },
+    {
+      "name": "Fashion",
+      "description": "Trendy clothing and accessories"
+    },
+    {
+      "name": "Home & Kitchen",
+      "description": "Essential items for your home and kitchen"
+    },
+    {
+      "name": "Books",
+      "description": "Educational and entertainment books"
+    },
+    {
+      "name": "Sports & Fitness",
+      "description": "Sports equipment and fitness accessories"
+    },
+    {
+      "name": "Beauty & Personal Care",
+      "description": "Beauty products and personal care items"
+    },
+    {
+      "name": "Automotive",
+      "description": "Car accessories and automotive products"
+    },
+    {
+      "name": "Gaming",
+      "description": "Gaming consoles, accessories, and equipment"
+    }
+  ],
+  "products": [
+    {
+      "name": "iPhone 15 Pro",
+      "description": "Latest Apple iPhone with advanced camera system and A17 Pro chip",
+      "price": 134900,
+      "category": "Electronics",
+      "available_on": ["Amazon", "Flipkart"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/iphone-15-pro" },
+        { "platform": "Flipkart", "url": "https://flipkart.com/iphone-15-pro" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400"
+    },
+    {
+      "name": "Samsung Galaxy S24 Ultra",
+      "description": "Premium Android smartphone with S Pen and advanced AI features",
+      "price": 129999,
+      "category": "Electronics",
+      "available_on": ["Amazon", "Flipkart"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/galaxy-s24-ultra" },
+        { "platform": "Flipkart", "url": "https://flipkart.com/galaxy-s24-ultra" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400"
+    },
+    {
+      "name": "MacBook Air M3",
+      "description": "Ultra-thin laptop with M3 chip, perfect for productivity and creativity",
+      "price": 114900,
+      "category": "Electronics",
+      "available_on": ["Amazon", "Flipkart"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/macbook-air-m3" },
+        { "platform": "Flipkart", "url": "https://flipkart.com/macbook-air-m3" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400"
+    },
+    {
+      "name": "Sony WH-1000XM5",
+      "description": "Industry-leading noise canceling wireless headphones",
+      "price": 29990,
+      "category": "Electronics",
+      "available_on": ["Amazon", "Flipkart"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/sony-wh-1000xm5" },
+        { "platform": "Flipkart", "url": "https://flipkart.com/sony-wh-1000xm5" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"
+    },
+    {
+      "name": "Nike Air Max 270",
+      "description": "Comfortable running shoes with Max Air cushioning",
+      "price": 12995,
+      "category": "Fashion",
+      "available_on": ["Amazon", "Myntra"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/nike-air-max-270" },
+        { "platform": "Myntra", "url": "https://myntra.com/nike-air-max-270" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400"
+    },
+    {
+      "name": "Levi's 511 Slim Jeans",
+      "description": "Classic slim-fit jeans with modern styling",
+      "price": 3999,
+      "category": "Fashion",
+      "available_on": ["Amazon", "Myntra"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/levis-511-slim-jeans" },
+        { "platform": "Myntra", "url": "https://myntra.com/levis-511-slim-jeans" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400"
+    },
+    {
+      "name": "Instant Pot Duo 7-in-1",
+      "description": "Multi-functional electric pressure cooker for quick and easy meals",
+      "price": 8999,
+      "category": "Home & Kitchen",
+      "available_on": ["Amazon", "Flipkart"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/instant-pot-duo" },
+        { "platform": "Flipkart", "url": "https://flipkart.com/instant-pot-duo" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400"
+    },
+    {
+      "name": "Dyson V15 Detect",
+      "description": "Powerful cordless vacuum with laser dust detection",
+      "price": 65900,
+      "category": "Home & Kitchen",
+      "available_on": ["Amazon", "Croma"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/dyson-v15-detect" },
+        { "platform": "Croma", "url": "https://croma.com/dyson-v15-detect" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400"
+    },
+    {
+      "name": "Atomic Habits",
+      "description": "An Easy & Proven Way to Build Good Habits & Break Bad Ones by James Clear",
+      "price": 599,
+      "category": "Books",
+      "available_on": ["Amazon", "Flipkart"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/atomic-habits" },
+        { "platform": "Flipkart", "url": "https://flipkart.com/atomic-habits" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400"
+    },
+    {
+      "name": "The Psychology of Money",
+      "description": "Timeless lessons on wealth, greed, and happiness by Morgan Housel",
+      "price": 399,
+      "category": "Books",
+      "available_on": ["Amazon", "Flipkart"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/psychology-of-money" },
+        { "platform": "Flipkart", "url": "https://flipkart.com/psychology-of-money" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400"
+    },
+    {
+      "name": "Yoga Mat Premium",
+      "description": "Non-slip exercise mat perfect for yoga, pilates, and workouts",
+      "price": 1999,
+      "category": "Sports & Fitness",
+      "available_on": ["Amazon", "Decathlon"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/yoga-mat-premium" },
+        { "platform": "Decathlon", "url": "https://decathlon.in/yoga-mat-premium" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400"
+    },
+    {
+      "name": "Resistance Bands Set",
+      "description": "Complete set of resistance bands for strength training and rehabilitation",
+      "price": 1299,
+      "category": "Sports & Fitness",
+      "available_on": ["Amazon", "Flipkart"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/resistance-bands-set" },
+        { "platform": "Flipkart", "url": "https://flipkart.com/resistance-bands-set" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400"
+    },
+    {
+      "name": "Lakme Absolute Lipstick",
+      "description": "Long-lasting matte lipstick with rich color payoff",
+      "price": 899,
+      "category": "Beauty & Personal Care",
+      "available_on": ["Nykaa", "Amazon"],
+      "links": [
+        { "platform": "Nykaa", "url": "https://nykaa.com/lakme-absolute-lipstick" },
+        { "platform": "Amazon", "url": "https://amazon.in/lakme-absolute-lipstick" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400"
+    },
+    {
+      "name": "The Ordinary Niacinamide",
+      "description": "10% Niacinamide + 1% Zinc serum for blemish-prone skin",
+      "price": 599,
+      "category": "Beauty & Personal Care",
+      "available_on": ["Nykaa", "Sephora"],
+      "links": [
+        { "platform": "Nykaa", "url": "https://nykaa.com/the-ordinary-niacinamide" },
+        { "platform": "Sephora", "url": "https://sephora.com/the-ordinary-niacinamide" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400"
+    },
+    {
+      "name": "Car Phone Mount",
+      "description": "Universal magnetic car phone holder for safe hands-free driving",
+      "price": 799,
+      "category": "Automotive",
+      "available_on": ["Amazon", "Flipkart"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/car-phone-mount" },
+        { "platform": "Flipkart", "url": "https://flipkart.com/car-phone-mount" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400"
+    },
+    {
+      "name": "Car Air Freshener",
+      "description": "Long-lasting car air freshener with natural fragrance",
+      "price": 299,
+      "category": "Automotive",
+      "available_on": ["Amazon", "Flipkart"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/car-air-freshener" },
+        { "platform": "Flipkart", "url": "https://flipkart.com/car-air-freshener" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400"
+    },
+    {
+      "name": "PlayStation 5",
+      "description": "Next-generation gaming console with ultra-high speed SSD",
+      "price": 54990,
+      "category": "Gaming",
+      "available_on": ["Amazon", "Flipkart"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/playstation-5" },
+        { "platform": "Flipkart", "url": "https://flipkart.com/playstation-5" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400"
+    },
+    {
+      "name": "Xbox Series X",
+      "description": "Most powerful Xbox console with 4K gaming and quick resume",
+      "price": 52990,
+      "category": "Gaming",
+      "available_on": ["Amazon", "Flipkart"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/xbox-series-x" },
+        { "platform": "Flipkart", "url": "https://flipkart.com/xbox-series-x" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?w=400"
+    },
+    {
+      "name": "Gaming Mechanical Keyboard",
+      "description": "RGB backlit mechanical keyboard with tactile switches",
+      "price": 7999,
+      "category": "Gaming",
+      "available_on": ["Amazon", "Flipkart"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/gaming-mechanical-keyboard" },
+        { "platform": "Flipkart", "url": "https://flipkart.com/gaming-mechanical-keyboard" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400"
+    },
+    {
+      "name": "Gaming Mouse",
+      "description": "High-precision gaming mouse with customizable RGB lighting",
+      "price": 3999,
+      "category": "Gaming",
+      "available_on": ["Amazon", "Flipkart"],
+      "links": [
+        { "platform": "Amazon", "url": "https://amazon.in/gaming-mouse" },
+        { "platform": "Flipkart", "url": "https://flipkart.com/gaming-mouse" }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400"
+    }
+  ],
+  "clearExisting": false
+} 
