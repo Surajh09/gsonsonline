@@ -23,20 +23,14 @@ const nextConfig = {
     unoptimized: false, // Set to true if you want to disable image optimization
   },
   
-  // Experimental features
-  experimental: {
-    // Enable if you want to use app directory features
-    appDir: true,
-  },
+  // Production optimizations
+  poweredByHeader: false,
+  compress: true,
   
   // Environment variables
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
-  
-  // Production optimizations
-  poweredByHeader: false,
-  compress: true,
   
   // Redirects (optional)
   async redirects() {

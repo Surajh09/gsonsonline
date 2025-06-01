@@ -12,6 +12,9 @@ export interface IProduct extends Document {
   price: number;
   category: mongoose.Types.ObjectId;
   image_url?: string;
+  image_data?: Buffer; // Store image as bytes
+  image_mimetype?: string; // Store MIME type (e.g., 'image/jpeg', 'image/png')
+  image_filename?: string; // Store original filename
   created_at: Date;
   updated_at: Date;
 }
@@ -56,6 +59,18 @@ const ProductSchema = new Schema<IProduct>({
     required: [true, 'Product category is required']
   },
   image_url: {
+    type: String,
+    trim: true
+  },
+  image_data: {
+    type: Buffer,
+    required: false
+  },
+  image_mimetype: {
+    type: String,
+    trim: true
+  },
+  image_filename: {
     type: String,
     trim: true
   }

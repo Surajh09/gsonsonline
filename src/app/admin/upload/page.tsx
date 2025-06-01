@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Upload, Plus, X, AlertCircle, CheckCircle, Package, Tag, Shield } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Upload, Plus, X, AlertCircle, CheckCircle, Package, Tag, Shield, Image as ImageIcon, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface Category {
@@ -33,6 +33,12 @@ export default function AdminUploadPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const router = useRouter();
+
+  // Image upload state
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [useImageUpload, setUseImageUpload] = useState(true); // Toggle between upload and URL
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Product form state
   const [productForm, setProductForm] = useState<ProductForm>({
@@ -89,12 +95,54 @@ export default function AdminUploadPage() {
     setTimeout(() => setMessage(null), 5000);
   };
 
+  // Image handling functions
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        showMessage('error', 'Invalid image type. Only JPEG, PNG, and WebP are allowed.');
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        showMessage('error', 'Image size too large. Maximum size is 5MB.');
+        return;
+      }
+
+      setSelectedImage(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const validateProductForm = (): string | null => {
     if (!productForm.name.trim()) return 'Product name is required';
     if (!productForm.description.trim()) return 'Product description is required';
     if (!productForm.price.trim()) return 'Product price is required';
     if (isNaN(Number(productForm.price)) || Number(productForm.price) <= 0) return 'Price must be a valid positive number';
     if (!productForm.category) return 'Category is required';
+    
+    // Validate image requirement
+    if (useImageUpload && !selectedImage && !productForm.image_url.trim()) {
+      return 'Please upload an image or provide an image URL';
+    }
     
     // Validate links
     for (const link of productForm.links) {
@@ -127,16 +175,36 @@ export default function AdminUploadPage() {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/admin/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...productForm,
-          price: Number(productForm.price)
-        }),
-      });
+      let response;
+      
+      if (useImageUpload && selectedImage) {
+        // Use FormData for file upload
+        const formData = new FormData();
+        formData.append('name', productForm.name);
+        formData.append('description', productForm.description);
+        formData.append('price', productForm.price);
+        formData.append('category', productForm.category);
+        formData.append('available_on', JSON.stringify(productForm.available_on));
+        formData.append('links', JSON.stringify(productForm.links));
+        formData.append('image_file', selectedImage);
+        
+        response = await fetch('/api/admin/products', {
+          method: 'POST',
+          body: formData,
+        });
+      } else {
+        // Use JSON for URL-based images
+        response = await fetch('/api/admin/products', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...productForm,
+            price: Number(productForm.price)
+          }),
+        });
+      }
 
       const data = await response.json();
       
@@ -151,6 +219,7 @@ export default function AdminUploadPage() {
           available_on: [],
           links: []
         });
+        removeImage(); // Clear image
         fetchCategories(); // Refresh categories to update item counts
       } else {
         showMessage('error', data.message || 'Failed to create product');
@@ -321,7 +390,7 @@ export default function AdminUploadPage() {
                       type="text"
                       value={productForm.name}
                       onChange={(e) => setProductForm(prev => ({ ...prev, name: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
                       placeholder="Enter product name"
                       required
                     />
@@ -335,7 +404,7 @@ export default function AdminUploadPage() {
                       type="number"
                       value={productForm.price}
                       onChange={(e) => setProductForm(prev => ({ ...prev, price: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
                       placeholder="Enter price"
                       min="0"
                       step="0.01"
@@ -352,7 +421,7 @@ export default function AdminUploadPage() {
                     value={productForm.description}
                     onChange={(e) => setProductForm(prev => ({ ...prev, description: e.target.value }))}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
                     placeholder="Enter product description"
                     required
                   />
@@ -380,15 +449,111 @@ export default function AdminUploadPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Image URL
+                      Image
                     </label>
-                    <input
-                      type="url"
-                      value={productForm.image_url}
-                      onChange={(e) => setProductForm(prev => ({ ...prev, image_url: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      placeholder="Enter image URL"
-                    />
+                    
+                    {/* Image Upload Toggle */}
+                    <div className="flex items-center mb-3">
+                      <button
+                        type="button"
+                        onClick={() => setUseImageUpload(true)}
+                        className={`px-3 py-1 rounded-l-lg text-sm ${
+                          useImageUpload
+                            ? 'bg-purple-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                      >
+                        Upload Image
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setUseImageUpload(false)}
+                        className={`px-3 py-1 rounded-r-lg text-sm ${
+                          !useImageUpload
+                            ? 'bg-purple-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                      >
+                        Image URL
+                      </button>
+                    </div>
+
+                    {useImageUpload ? (
+                      /* Image Upload Section */
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-4">
+                          {selectedImage && imagePreview && (
+                            <div className="w-20 h-20 border-2 border-gray-200 rounded-lg overflow-hidden">
+                              <img
+                                src={imagePreview}
+                                alt="Selected"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          )}
+                          <div className="flex-1">
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/jpg,image/png,image/webp"
+                              ref={fileInputRef}
+                              onChange={handleImageSelect}
+                              className="hidden"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => fileInputRef.current?.click()}
+                              className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-purple-700 flex items-center"
+                            >
+                              <ImageIcon className="h-4 w-4 mr-2" />
+                              {selectedImage ? 'Change Image' : 'Select Image'}
+                            </button>
+                            {selectedImage && (
+                              <button
+                                type="button"
+                                onClick={removeImage}
+                                className="ml-2 text-red-500 hover:text-red-700 px-3 py-2 text-sm flex items-center"
+                              >
+                                <Trash2 className="h-4 w-4 mr-1" />
+                                Remove
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        {selectedImage && (
+                          <div className="text-sm text-gray-600">
+                            <p><strong>File:</strong> {selectedImage.name}</p>
+                            <p><strong>Size:</strong> {(selectedImage.size / 1024 / 1024).toFixed(2)} MB</p>
+                            <p><strong>Type:</strong> {selectedImage.type}</p>
+                          </div>
+                        )}
+                        <p className="text-xs text-gray-500">
+                          Supported formats: JPEG, PNG, WebP. Maximum size: 5MB.
+                        </p>
+                      </div>
+                    ) : (
+                      /* Image URL Section */
+                      <div>
+                        <input
+                          type="url"
+                          value={productForm.image_url}
+                          onChange={(e) => setProductForm(prev => ({ ...prev, image_url: e.target.value }))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
+                          placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
+                        />
+                        {productForm.image_url && (
+                          <div className="mt-2">
+                            <img
+                              src={productForm.image_url}
+                              alt="Preview"
+                              className="w-20 h-20 object-cover rounded-lg border-2 border-gray-200"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -467,8 +632,9 @@ export default function AdminUploadPage() {
                           type="url"
                           value={link.url}
                           onChange={(e) => updateLink(index, 'url', e.target.value)}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
                           placeholder="Enter purchase URL"
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                          required
                         />
                         <button
                           type="button"
@@ -511,7 +677,7 @@ export default function AdminUploadPage() {
                     type="text"
                     value={categoryForm.name}
                     onChange={(e) => setCategoryForm(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
                     placeholder="Enter category name"
                     required
                   />
@@ -524,8 +690,8 @@ export default function AdminUploadPage() {
                   <textarea
                     value={categoryForm.description}
                     onChange={(e) => setCategoryForm(prev => ({ ...prev, description: e.target.value }))}
-                    rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
                     placeholder="Enter category description"
                     required
                   />

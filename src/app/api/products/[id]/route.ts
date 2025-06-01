@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Product from '@/models/Product';
+import Category from '@/models/Category';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
-    const product = await Product.findById(params.id).populate('category', 'name description');
+    const { id } = await params;
+    const product = await Product.findById(id).populate('category', 'name description');
     
     if (!product) {
       return NextResponse.json(

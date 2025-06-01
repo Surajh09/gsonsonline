@@ -103,9 +103,9 @@ export default function CategoryPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Breadcrumb */}
-          <div className="flex items-center space-x-2 text-sm text-gray-500 mb-6">
+          <div className="flex items-center space-x-2 text-sm text-gray-500 mb-4">
             <Link href="/" className="hover:text-purple-600">Home</Link>
             <span>/</span>
             <Link href="/categories" className="hover:text-purple-600">Categories</Link>
@@ -116,7 +116,7 @@ export default function CategoryPage() {
           {/* Back Button */}
           <Link
             href="/categories"
-            className="inline-flex items-center text-purple-600 hover:text-purple-700 mb-6"
+            className="inline-flex items-center text-purple-600 hover:text-purple-700 mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Categories
@@ -124,17 +124,17 @@ export default function CategoryPage() {
 
           {/* Category Info */}
           {category && (
-            <div className="text-center mb-8">
-              <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Package className="h-8 w-8 text-purple-600" />
+            <div className="text-center mb-6">
+              <div className="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Package className="h-6 w-6 text-purple-600" />
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
                 {category.name}
               </h1>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
+              <p className="text-base text-gray-600 max-w-2xl mx-auto mb-4">
                 {category.description}
               </p>
-              <div className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-full">
+              <div className="inline-flex items-center px-3 py-1.5 bg-purple-50 text-purple-700 rounded-full text-sm">
                 <Package className="h-4 w-4 mr-2" />
                 {category.no_of_items} {category.no_of_items === 1 ? 'Product' : 'Products'}
               </div>
@@ -149,7 +149,7 @@ export default function CategoryPage() {
                 placeholder="Search products in this category..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
               />
               <Search className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
             </div>

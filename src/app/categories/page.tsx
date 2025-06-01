@@ -42,36 +42,23 @@ export default function CategoriesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Product Categories
-            </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Discover our wide range of product categories. From electronics to fashion, we&apos;ve got everything you need.
-            </p>
-            
-            {/* Search Bar */}
-            <div className="max-w-md mx-auto">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search categories..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-                <Search className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-              </div>
-            </div>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Search Bar */}
+        <div className="max-w-md mx-auto mb-8">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search categories..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
+            />
+            <Search className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
           </div>
         </div>
-      </div>
 
-      {/* Categories Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Categories Grid */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[...Array(6)].map((_, i) => (

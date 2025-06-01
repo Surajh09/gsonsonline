@@ -22,7 +22,59 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB();
     
-    const body = await request.json();
+    const contentType = request.headers.get('content-type') || '';
+    let body: any;
+    let imageData: Buffer | null = null;
+    let imageMimetype: string | null = null;
+    let imageFilename: string | null = null;
+
+    if (contentType.includes('multipart/form-data')) {
+      // Handle form data with file upload
+      const formData = await request.formData();
+      
+      // Extract form fields
+      body = {
+        name: formData.get('name') as string,
+        description: formData.get('description') as string,
+        price: formData.get('price') as string,
+        category: formData.get('category') as string,
+        available_on: JSON.parse(formData.get('available_on') as string || '[]'),
+        links: JSON.parse(formData.get('links') as string || '[]'),
+        image_url: formData.get('image_url') as string,
+      };
+
+      // Handle image file
+      const imageFile = formData.get('image_file') as File;
+      if (imageFile && imageFile.size > 0) {
+        // Validate file type
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        if (!allowedTypes.includes(imageFile.type)) {
+          return NextResponse.json(
+            { success: false, error: 'Invalid image type. Only JPEG, PNG, and WebP are allowed.' },
+            { status: 400 }
+          );
+        }
+
+        // Validate file size (max 5MB)
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        if (imageFile.size > maxSize) {
+          return NextResponse.json(
+            { success: false, error: 'Image size too large. Maximum size is 5MB.' },
+            { status: 400 }
+          );
+        }
+
+        // Convert file to buffer
+        const arrayBuffer = await imageFile.arrayBuffer();
+        imageData = Buffer.from(arrayBuffer);
+        imageMimetype = imageFile.type;
+        imageFilename = imageFile.name;
+      }
+    } else {
+      // Handle JSON data (existing functionality)
+      body = await request.json();
+    }
+
     const { name, description, price, category, available_on, links, image_url } = body;
 
     // Validate input
@@ -60,16 +112,25 @@ export async function POST(request: NextRequest) {
     }
 
     // Create new product
-    const product = new Product({
+    const productData: any = {
       name,
       description,
       price: Number(price),
       category: categoryDoc._id,
       available_on: available_on || [],
       links: links || [],
-      image_url: image_url || null
-    });
+    };
 
+    // Add image data if uploaded, otherwise use image_url
+    if (imageData) {
+      productData.image_data = imageData;
+      productData.image_mimetype = imageMimetype;
+      productData.image_filename = imageFilename;
+    } else if (image_url) {
+      productData.image_url = image_url;
+    }
+
+    const product = new Product(productData);
     const savedProduct = await product.save();
 
     // Update category item count

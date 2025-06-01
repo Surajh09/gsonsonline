@@ -4,11 +4,12 @@ import Category from '@/models/Category';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
-    const category = await Category.findById(params.id);
+    const { id } = await params;
+    const category = await Category.findById(id);
     
     if (!category) {
       return NextResponse.json(
