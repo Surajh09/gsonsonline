@@ -61,15 +61,9 @@ export default function AdminUploadPage() {
   const platformOptions = ['Amazon', 'Flipkart', 'Meesho', 'Myntra', 'Ajio', 'Nykaa', 'BigBasket', 'Swiggy', 'Zomato', 'Other'];
 
   useEffect(() => {
-    // Check if running on localhost/development
-    const isLocalhost = typeof window !== 'undefined' && 
-      (window.location.hostname === 'localhost' || 
-       window.location.hostname === '127.0.0.1' ||
-       window.location.hostname === '' ||
-       process.env.NODE_ENV === 'development');
-    
-    if (!isLocalhost) {
-      // Redirect to home page if not on localhost
+    // Only allow access in development environment
+    if (process.env.NODE_ENV !== 'development') {
+      // Redirect to home page if not in development
       router.push('/');
       return;
     }

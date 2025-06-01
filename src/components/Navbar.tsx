@@ -14,14 +14,8 @@ export default function Navbar() {
 
   useEffect(() => {
     setMounted(true);
-    // Check if running on localhost/development
-    setIsLocalhost(
-      typeof window !== 'undefined' && 
-      (window.location.hostname === 'localhost' || 
-       window.location.hostname === '127.0.0.1' ||
-       window.location.hostname === '' ||
-       process.env.NODE_ENV === 'development')
-    );
+    // Only show admin panel in development environment
+    setIsLocalhost(process.env.NODE_ENV === 'development');
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
