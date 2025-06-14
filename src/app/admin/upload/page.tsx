@@ -384,7 +384,7 @@ export default function AdminUploadPage() {
                       type="text"
                       value={productForm.name}
                       onChange={(e) => setProductForm(prev => ({ ...prev, name: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-500"
                       placeholder="Enter product name"
                       required
                     />
@@ -398,7 +398,7 @@ export default function AdminUploadPage() {
                       type="number"
                       value={productForm.price}
                       onChange={(e) => setProductForm(prev => ({ ...prev, price: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-500"
                       placeholder="Enter price"
                       min="0"
                       step="0.01"
@@ -415,7 +415,7 @@ export default function AdminUploadPage() {
                     value={productForm.description}
                     onChange={(e) => setProductForm(prev => ({ ...prev, description: e.target.value }))}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-500"
                     placeholder="Enter product description"
                     required
                   />
@@ -531,7 +531,7 @@ export default function AdminUploadPage() {
                           type="url"
                           value={productForm.image_url}
                           onChange={(e) => setProductForm(prev => ({ ...prev, image_url: e.target.value }))}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-500"
                           placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
                         />
                         {productForm.image_url && (
@@ -626,7 +626,7 @@ export default function AdminUploadPage() {
                           type="url"
                           value={link.url}
                           onChange={(e) => updateLink(index, 'url', e.target.value)}
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-500"
                           placeholder="Enter purchase URL"
                           required
                         />
@@ -671,7 +671,7 @@ export default function AdminUploadPage() {
                     type="text"
                     value={categoryForm.name}
                     onChange={(e) => setCategoryForm(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-500"
                     placeholder="Enter category name"
                     required
                   />
@@ -685,7 +685,7 @@ export default function AdminUploadPage() {
                     value={categoryForm.description}
                     onChange={(e) => setCategoryForm(prev => ({ ...prev, description: e.target.value }))}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-500"
                     placeholder="Enter category description"
                     required
                   />
