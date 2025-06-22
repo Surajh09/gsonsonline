@@ -11,14 +11,14 @@ export async function GET(
     await connectDB();
     const { id } = await params;
     const product = await Product.findById(id).populate('category', 'name description');
-    
+
     if (!product) {
       return NextResponse.json(
         { success: false, error: 'Product not found' },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json({
       success: true,
       data: product

@@ -71,7 +71,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               <ShoppingCart className="h-16 w-16 text-purple-400" />
             </div>
           )}
-          
+
           {/* Category Badge */}
           <div className="absolute top-3 left-3">
             <span
@@ -85,7 +85,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Product Info */}
         <div className="p-4">
-          <h3 
+          <h3
             className="font-semibold text-gray-900 mb-2 overflow-hidden group-hover:text-purple-600 transition-colors"
             style={{
               display: '-webkit-box',
@@ -95,8 +95,8 @@ export default function ProductCard({ product }: ProductCardProps) {
           >
             {product.name}
           </h3>
-          
-          <p 
+
+          <p
             className="text-gray-600 text-sm mb-3 overflow-hidden"
             style={{
               display: '-webkit-box',
@@ -164,7 +164,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
         )}
-        
+
         {(!product.links || product.links.length === 0) && (
           <Link
             href={`/products/${product._id}`}

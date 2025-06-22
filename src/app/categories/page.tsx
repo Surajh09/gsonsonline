@@ -24,7 +24,7 @@ export default function CategoriesPage() {
     try {
       const response = await fetch('/api/categories');
       const data = await response.json();
-      
+
       if (data.success) {
         setCategories(data.data);
       }
@@ -84,15 +84,15 @@ export default function CategoriesPage() {
                   </div>
                   <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-purple-600 transition-colors" />
                 </div>
-                
+
                 <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-purple-900 transition-colors">
                   {category.name}
                 </h3>
-                
+
                 <p className="text-gray-600 mb-4 line-clamp-2">
                   {category.description}
                 </p>
-                
+
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-500">
                     {category.no_of_items} {category.no_of_items === 1 ? 'product' : 'products'}

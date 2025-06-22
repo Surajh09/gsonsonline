@@ -22,15 +22,15 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             {category.no_of_items} items
           </span>
         </div>
-        
+
         <h3 className="text-xl font-semibold text-gray-900 mb-2">
           {category.name}
         </h3>
-        
+
         <p className="text-gray-600 text-sm line-clamp-3">
           {category.description}
         </p>
-        
+
         <div className="mt-4 flex items-center text-blue-600 text-sm font-medium">
           <span>Explore products</span>
           <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

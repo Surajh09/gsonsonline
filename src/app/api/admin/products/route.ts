@@ -19,20 +19,20 @@ export async function GET(request: NextRequest) {
     }
 
     await connectDB();
-    
+
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '50');
     const skip = (page - 1) * limit;
-    
+
     const products = await Product.find({})
       .populate('category', 'name')
       .sort({ created_at: -1 })
       .skip(skip)
       .limit(limit);
-    
+
     const total = await Product.countDocuments({});
-    
+
     return NextResponse.json({
       success: true,
       data: products,
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     await connectDB();
-    
+
     const contentType = request.headers.get('content-type') || '';
     let body: any;
     let images: Array<{ data: Buffer; mimetype: string; filename: string }> = [];
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     if (contentType.includes('multipart/form-data')) {
       // Handle form data with file upload
       const formData = await request.formData();
-      
+
       // Extract form fields
       body = {
         name: formData.get('name') as string,
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
 
       // Handle multiple image files
       const imageFiles = formData.getAll('images') as File[];
-      
+
       for (const imageFile of imageFiles) {
         if (imageFile && imageFile.size > 0) {
           // Validate file type
@@ -205,14 +205,14 @@ export async function PUT(request: NextRequest) {
     }
 
     await connectDB();
-    
+
     const contentType = request.headers.get('content-type') || '';
     let body: any;
     let images: Array<{ data: Buffer; mimetype: string; filename: string }> = [];
 
     if (contentType.includes('multipart/form-data')) {
       const formData = await request.formData();
-      
+
       body = {
         _id: formData.get('_id') as string,
         name: formData.get('name') as string,
@@ -226,7 +226,7 @@ export async function PUT(request: NextRequest) {
 
       // Handle multiple image files
       const imageFiles = formData.getAll('images') as File[];
-      
+
       for (const imageFile of imageFiles) {
         if (imageFile && imageFile.size > 0) {
           // Validate file type
@@ -329,7 +329,7 @@ export async function PUT(request: NextRequest) {
     if (existingProduct.category.toString() !== categoryDoc._id.toString()) {
       const oldCategoryCount = await Product.countDocuments({ category: existingProduct.category });
       const newCategoryCount = await Product.countDocuments({ category: categoryDoc._id });
-      
+
       await Category.findByIdAndUpdate(existingProduct.category, { no_of_items: oldCategoryCount });
       await Category.findByIdAndUpdate(categoryDoc._id, { no_of_items: newCategoryCount });
     }
@@ -356,10 +356,10 @@ export async function DELETE(request: NextRequest) {
     }
 
     await connectDB();
-    
+
     const { searchParams } = new URL(request.url);
     const productId = searchParams.get('id');
-    
+
     if (!productId) {
       return NextResponse.json(
         { success: false, error: 'Product ID is required' },

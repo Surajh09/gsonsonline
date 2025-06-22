@@ -4,7 +4,7 @@ import { seedDatabase } from '@/lib/seedData';
 export async function POST() {
   try {
     const result = await seedDatabase();
-    
+
     if (result.success) {
       return NextResponse.json({
         success: true,

@@ -6,7 +6,7 @@ export async function GET() {
   try {
     await connectDB();
     const categories = await Category.find({}).sort({ name: 1 });
-    
+
     return NextResponse.json({
       success: true,
       data: categories

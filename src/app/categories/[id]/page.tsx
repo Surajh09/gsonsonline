@@ -30,7 +30,7 @@ interface Category {
 export default function CategoryPage() {
   const params = useParams();
   const categoryId = params.id as string;
-  
+
   const [category, setCategory] = useState<Category | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,7 +49,7 @@ export default function CategoryPage() {
     try {
       const response = await fetch(`/api/categories/${categoryId}`);
       const data = await response.json();
-      
+
       if (data.success) {
         setCategory(data.data);
       }
@@ -66,12 +66,12 @@ export default function CategoryPage() {
         page: currentPage.toString(),
         limit: '12'
       });
-      
+
       if (searchQuery) params.append('search', searchQuery);
-      
+
       const response = await fetch(`/api/products?${params}`);
       const data = await response.json();
-      
+
       if (data.success) {
         setProducts(data.data);
         setTotalPages(data.pagination.pages);
@@ -188,24 +188,23 @@ export default function CategoryPage() {
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
-                
+
                 {[...Array(totalPages)].map((_, i) => {
                   const page = i + 1;
                   return (
                     <button
                       key={page}
                       onClick={() => handlePageChange(page)}
-                      className={`px-4 py-2 rounded-lg ${
-                        currentPage === page
+                      className={`px-4 py-2 rounded-lg ${currentPage === page
                           ? 'bg-purple-600 text-white'
                           : 'border border-gray-300 hover:bg-gray-50'
-                      }`}
+                        }`}
                     >
                       {page}
                     </button>
                   );
                 })}
-                
+
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
@@ -223,8 +222,8 @@ export default function CategoryPage() {
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No products found</h3>
             <p className="text-gray-600 mb-4">
-              {searchQuery 
-                ? 'Try adjusting your search criteria' 
+              {searchQuery
+                ? 'Try adjusting your search criteria'
                 : 'No products available in this category yet'
               }
             </p>

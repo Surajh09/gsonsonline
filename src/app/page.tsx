@@ -81,7 +81,7 @@ export default function HomePage() {
               We make it easy to discover and purchase products from your favorite e-commerce platforms.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-8 rounded-lg shadow-md">
               <div className="bg-purple-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
@@ -94,7 +94,7 @@ export default function HomePage() {
                 Browse through our extensive collection of products across multiple categories, all in one place.
               </p>
             </div>
-            
+
             <div className="bg-white p-8 rounded-lg shadow-md">
               <div className="bg-purple-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
                 <Star className="h-6 w-6 text-purple-600" />
@@ -106,7 +106,7 @@ export default function HomePage() {
                 Find products available on Amazon, Flipkart, Meesho, and other popular e-commerce platforms.
               </p>
             </div>
-            
+
             <div className="bg-white p-8 rounded-lg shadow-md">
               <div className="bg-purple-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
                 <Zap className="h-6 w-6 text-purple-600" />

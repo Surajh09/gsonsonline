@@ -34,6 +34,8 @@ export default function ProductDetailPage() {
   useEffect(() => {
     if (params.id) {
       fetchProduct(params.id as string);
+      // Record page view
+      recordInsight(params.id as string, 'view');
     }
     // Check if admin mode is enabled
     setIsAdmin(process.env.NEXT_PUBLIC_ADMIN_ENABLED === 'true');
@@ -43,7 +45,7 @@ export default function ProductDetailPage() {
     try {
       const response = await fetch(`/api/products/${id}`);
       const data = await response.json();
-      
+
       if (data.success) {
         setProduct(data.data);
       } else {
@@ -53,6 +55,30 @@ export default function ProductDetailPage() {
       setError('Failed to load product');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const recordInsight = async (productId: string, eventType: 'view' | 'link_click', platform?: string) => {
+    try {
+      await fetch('/api/insights', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          product_id: productId,
+          event_type: eventType,
+          platform
+        }),
+      });
+    } catch (error) {
+      console.error('Error recording insight:', error);
+    }
+  };
+
+  const handleLinkClick = (platform: string) => {
+    if (product) {
+      recordInsight(product._id, 'link_click', platform);
     }
   };
 
@@ -148,7 +174,7 @@ export default function ProductDetailPage() {
                     }}
                   />
                 ) : null}
-                
+
                 {/* Fallback Image */}
                 <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-100 to-purple-200 ${imageSrc ? 'hidden' : ''}`}>
                   <ShoppingCart className="h-24 w-24 text-purple-400" />
@@ -207,6 +233,7 @@ export default function ProductDetailPage() {
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => handleLinkClick(link.platform)}
                         className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center font-medium"
                       >
                         <ExternalLink className="h-5 w-5 mr-2" />

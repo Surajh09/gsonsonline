@@ -84,9 +84,8 @@ const ImageCarousel = ({ images }: { images: string[] }) => {
   return (
     <div className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
       <div
-        className={`absolute inset-0 flex transition-transform duration-500 ease-in-out ${
-          isTransitioning ? 'opacity-50' : ''
-        }`}
+        className={`absolute inset-0 flex transition-transform duration-500 ease-in-out ${isTransitioning ? 'opacity-50' : ''
+          }`}
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {images.map((image, index) => (
@@ -101,29 +100,28 @@ const ImageCarousel = ({ images }: { images: string[] }) => {
           />
         ))}
       </div>
-      
+
       <button
         onClick={goToPrevious}
         className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow hover:bg-white transition-colors"
       >
         <ChevronLeft className="h-6 w-6 text-gray-800" />
       </button>
-      
+
       <button
         onClick={goToNext}
         className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow hover:bg-white transition-colors"
       >
         <ChevronRight className="h-6 w-6 text-gray-800" />
       </button>
-      
+
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2">
         {images.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentIndex(index)}
-            className={`w-2 h-2 rounded-full transition-colors ${
-              index === currentIndex ? 'bg-white' : 'bg-white/50'
-            }`}
+            className={`w-2 h-2 rounded-full transition-colors ${index === currentIndex ? 'bg-white' : 'bg-white/50'
+              }`}
           />
         ))}
       </div>
@@ -194,7 +192,7 @@ export default function AdminUploadPage() {
       router.push('/');
       return;
     }
-    
+
     setIsAuthorized(true);
     fetchCategories();
     fetchProducts();
@@ -217,14 +215,14 @@ export default function AdminUploadPage() {
     try {
       const response = await fetch('/api/admin/categories');
       const categoriesData = await response.json();
-      
+
       if (categoriesData.success) {
         const productsMap: CategoryProducts = {};
-        
+
         for (const category of categoriesData.data) {
           const productsResponse = await fetch(`/api/products?category=${category._id}`);
           const productsData = await productsResponse.json();
-          
+
           if (productsData.success) {
             productsMap[category._id] = {
               _id: category._id,
@@ -233,7 +231,7 @@ export default function AdminUploadPage() {
             };
           }
         }
-        
+
         setCategoryProducts(productsMap);
       }
     } catch (error) {
@@ -249,22 +247,22 @@ export default function AdminUploadPage() {
   // Handle image selection
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    
+
     // Validate each file
     const validFiles = files.filter(file => {
       const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
       const maxSize = 5 * 1024 * 1024; // 5MB
-      
+
       if (!allowedTypes.includes(file.type)) {
         showMessage('error', `Invalid type for ${file.name}. Only JPEG, PNG, and WebP are allowed.`);
         return false;
       }
-      
+
       if (file.size > maxSize) {
         showMessage('error', `${file.name} is too large. Maximum size is 5MB.`);
         return false;
       }
-      
+
       return true;
     });
 
@@ -273,7 +271,7 @@ export default function AdminUploadPage() {
       ...prev,
       images: [...prev.images, ...validFiles]
     }));
-    
+
     // Create previews
     validFiles.forEach(file => {
       const reader = new FileReader();
@@ -299,12 +297,12 @@ export default function AdminUploadPage() {
     if (!productForm.price.trim()) return 'Product price is required';
     if (isNaN(Number(productForm.price)) || Number(productForm.price) <= 0) return 'Price must be a valid positive number';
     if (!productForm.category) return 'Category is required';
-    
+
     // Validate image requirement
     if (useImageUpload && selectedImages.length === 0 && !productForm.image_url.trim()) {
       return 'Please upload images or provide an image URL';
     }
-    
+
     // Validate links
     for (const link of productForm.links) {
       if (!link.platform.trim()) return 'All link platforms must be specified';
@@ -315,7 +313,7 @@ export default function AdminUploadPage() {
         return `Invalid URL format for ${link.platform}`;
       }
     }
-    
+
     return null;
   };
 
@@ -327,7 +325,7 @@ export default function AdminUploadPage() {
 
   const handleProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const validationError = validateProductForm();
     if (validationError) {
       showMessage('error', validationError);
@@ -343,11 +341,11 @@ export default function AdminUploadPage() {
       formData.append('category', productForm.category);
       formData.append('available_on', JSON.stringify(productForm.available_on));
       formData.append('links', JSON.stringify(productForm.links));
-      
+
       if (productForm.image_url) {
         formData.append('image_url', productForm.image_url);
       }
-      
+
       // Append multiple images
       productForm.images.forEach((file, index) => {
         formData.append(`images`, file);
@@ -364,7 +362,7 @@ export default function AdminUploadPage() {
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
         showMessage('success', `Product ${isEditMode ? 'updated' : 'created'} successfully!`);
         setProductForm({
@@ -407,11 +405,11 @@ export default function AdminUploadPage() {
       links: product.links,
       images: []
     });
-    
+
     // Reset image states
     setSelectedImages([]);
     setImagePreviews([]);
-    
+
     // Scroll to form
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -422,7 +420,7 @@ export default function AdminUploadPage() {
         method: 'DELETE',
       });
       const data = await response.json();
-      
+
       if (data.success) {
         showMessage('success', 'Product deleted successfully!');
         fetchProducts();
@@ -454,7 +452,7 @@ export default function AdminUploadPage() {
 
   const handleCategorySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const validationError = validateCategoryForm();
     if (validationError) {
       showMessage('error', validationError);
@@ -472,7 +470,7 @@ export default function AdminUploadPage() {
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
         showMessage('success', 'Category created successfully!');
         setCategoryForm({
@@ -524,7 +522,7 @@ export default function AdminUploadPage() {
   const updateLink = (index: number, field: 'platform' | 'url', value: string) => {
     setProductForm(prev => ({
       ...prev,
-      links: prev.links.map((link, i) => 
+      links: prev.links.map((link, i) =>
         i === index ? { ...link, [field]: value } : link
       )
     }));
@@ -586,7 +584,7 @@ export default function AdminUploadPage() {
                 <ChevronDown className="h-5 w-5 text-gray-500" />
               )}
             </button>
-            
+
             {expandedCategories.includes(category) && (
               <div className="divide-y">
                 {products.map(product => (
@@ -637,21 +635,19 @@ export default function AdminUploadPage() {
         <div className="flex space-x-4 mb-8">
           <button
             onClick={() => setActiveTab('product')}
-            className={`px-4 py-2 rounded-lg ${
-              activeTab === 'product'
+            className={`px-4 py-2 rounded-lg ${activeTab === 'product'
                 ? 'bg-purple-600 text-white'
                 : 'bg-white text-gray-600 hover:bg-gray-50'
-            }`}
+              }`}
           >
             Products
           </button>
           <button
             onClick={() => setActiveTab('category')}
-            className={`px-4 py-2 rounded-lg ${
-              activeTab === 'category'
+            className={`px-4 py-2 rounded-lg ${activeTab === 'category'
                 ? 'bg-purple-600 text-white'
                 : 'bg-white text-gray-600 hover:bg-gray-50'
-            }`}
+              }`}
           >
             Categories
           </button>
@@ -664,7 +660,7 @@ export default function AdminUploadPage() {
               <h2 className="text-xl font-semibold text-gray-900 mb-6">
                 {isEditMode ? 'Edit Product' : 'Add New Product'}
               </h2>
-              
+
               {/* Image Preview Carousel */}
               {imagePreviews.length > 0 && (
                 <div className="mb-6">
@@ -763,28 +759,26 @@ export default function AdminUploadPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Image
                     </label>
-                    
+
                     {/* Image Upload Toggle */}
                     <div className="flex items-center mb-3">
                       <button
                         type="button"
                         onClick={() => setUseImageUpload(true)}
-                        className={`px-3 py-1 rounded-l-lg text-sm ${
-                          useImageUpload
+                        className={`px-3 py-1 rounded-l-lg text-sm ${useImageUpload
                             ? 'bg-purple-600 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}
+                          }`}
                       >
                         Upload Image
                       </button>
                       <button
                         type="button"
                         onClick={() => setUseImageUpload(false)}
-                        className={`px-3 py-1 rounded-r-lg text-sm ${
-                          !useImageUpload
+                        className={`px-3 py-1 rounded-r-lg text-sm ${!useImageUpload
                             ? 'bg-purple-600 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}
+                          }`}
                       >
                         Image URL
                       </button>
@@ -888,11 +882,10 @@ export default function AdminUploadPage() {
                         type="button"
                         onClick={() => addPlatform(platform)}
                         disabled={productForm.available_on.includes(platform)}
-                        className={`px-3 py-1 rounded-full text-sm ${
-                          productForm.available_on.includes(platform)
+                        className={`px-3 py-1 rounded-full text-sm ${productForm.available_on.includes(platform)
                             ? 'bg-purple-100 text-purple-700 cursor-not-allowed'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
+                          }`}
                       >
                         {platform}
                       </button>
@@ -992,7 +985,7 @@ export default function AdminUploadPage() {
               <h2 className="text-xl font-semibold text-gray-900 p-6 border-b">
                 Products by Category
               </h2>
-              
+
               <div className="divide-y">
                 {Object.values(categoryProducts).map((category) => (
                   <div key={category._id} className="p-4">
@@ -1007,7 +1000,7 @@ export default function AdminUploadPage() {
                         <ChevronDown className="h-5 w-5 text-gray-500" />
                       )}
                     </button>
-                    
+
                     {expandedCategories.includes(category._id) && (
                       <div className="mt-2 space-y-2">
                         {category.products.map((product) => (
@@ -1030,14 +1023,14 @@ export default function AdminUploadPage() {
                                   </div>
                                 )}
                               </div>
-                              
+
                               {/* Product Info */}
                               <div>
                                 <h3 className="font-medium text-gray-900">{product.name}</h3>
                                 <p className="text-sm text-gray-500">₹{product.price.toLocaleString()}</p>
                               </div>
                             </div>
-                            
+
                             {/* Actions */}
                             <div className="flex items-center space-x-2">
                               <button
@@ -1153,7 +1146,7 @@ export default function AdminUploadPage() {
             <ImageIcon className="h-4 w-4 mr-2" />
             Add Images
           </button>
-          
+
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
             {imagePreviews.map((preview, index) => (
               <div key={index} className="relative">

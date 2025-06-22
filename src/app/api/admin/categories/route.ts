@@ -15,9 +15,9 @@ export async function GET(request: NextRequest) {
     }
 
     await connectDB();
-    
+
     const categories = await Category.find({}).sort({ name: 1 });
-    
+
     return NextResponse.json({
       success: true,
       data: categories
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     }
 
     await connectDB();
-    
+
     const body = await request.json();
     const { name, description } = body;
 
@@ -91,10 +91,10 @@ export async function DELETE(request: NextRequest) {
     }
 
     await connectDB();
-    
+
     const { searchParams } = new URL(request.url);
     const categoryId = searchParams.get('id');
-    
+
     if (!categoryId) {
       return NextResponse.json(
         { success: false, error: 'Category ID is required' },

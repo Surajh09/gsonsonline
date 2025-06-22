@@ -32,12 +32,12 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <img 
-              src="/logo.jpg" 
-              alt="Your Company Logo" 
+            <img
+              src="/logo.jpg"
+              alt="Your Company Logo"
               className="h-16 w-auto"
             />
-            
+
           </Link>
 
           {/* Desktop Navigation */}
@@ -115,7 +115,7 @@ export default function Navbar() {
                   Admin
                 </Link>
               )}
-              
+
               {/* Mobile Search */}
               <form onSubmit={handleSearch} className="px-3 py-2">
                 <div className="relative">

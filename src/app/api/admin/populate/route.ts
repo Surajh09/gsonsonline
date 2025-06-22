@@ -5,9 +5,9 @@ import Category from '@/models/Category';
 
 // Development-only check
 function isDevelopment() {
-  return process.env.NODE_ENV === 'development' || 
-         process.env.VERCEL_ENV === 'development' ||
-         process.env.NODE_ENV !== 'production';
+  return process.env.NODE_ENV === 'development' ||
+    process.env.VERCEL_ENV === 'development' ||
+    process.env.NODE_ENV !== 'production';
 }
 
 export async function POST(request: NextRequest) {
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
 
   try {
     await connectDB();
-    
+
     // Better error handling for JSON parsing
     let body;
     try {
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     const { categories, products, clearExisting = false } = body;
 
     // Validate input
@@ -65,14 +65,14 @@ export async function POST(request: NextRequest) {
       try {
         // Check if category already exists
         const existingCategory = await Category.findOne({ name: categoryData.name });
-        
+
         if (!existingCategory) {
           const category = new Category({
             name: categoryData.name,
             description: categoryData.description || `Explore our ${categoryData.name} collection`,
             no_of_items: 0 // Will be updated after products are inserted
           });
-          
+
           const savedCategory = await category.save();
           categoryResults.push(savedCategory);
           categoryMap.set(categoryData.name, savedCategory._id);
@@ -87,12 +87,12 @@ export async function POST(request: NextRequest) {
 
     // Insert products
     const productResults = [];
-    
+
     for (const productData of products) {
       try {
         // Get category ID from map
         const categoryId = categoryMap.get(productData.category);
-        
+
         if (!categoryId) {
           console.error(`Category not found for product: ${productData.name}`);
           continue;
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
 
         // Check if product already exists
         const existingProduct = await Product.findOne({ name: productData.name });
-        
+
         if (!existingProduct) {
           const product = new Product({
             name: productData.name,
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
             links: productData.links || [],
             image_url: productData.image_url || null
           });
-          
+
           const savedProduct = await product.save();
           productResults.push(savedProduct);
         }

@@ -10,14 +10,14 @@ export async function GET(
     await connectDB();
     const { id } = await params;
     const category = await Category.findById(id);
-    
+
     if (!category) {
       return NextResponse.json(
         { success: false, error: 'Category not found' },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json({
       success: true,
       data: category

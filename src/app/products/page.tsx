@@ -41,12 +41,12 @@ function ProductsContent() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 0, max: 100000 });
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
-  
+
   const searchParams = useSearchParams();
 
   // Available platforms for filtering
   const availablePlatforms = ['Amazon', 'Flipkart', 'Myntra', 'Ajio', 'Nykaa', 'Meesho'];
-  
+
   // Price range constants
   const MIN_PRICE = 0;
   const MAX_PRICE = 100000;
@@ -88,16 +88,16 @@ function ProductsContent() {
         page: currentPage.toString(),
         limit: '12'
       });
-      
+
       if (searchQuery) params.append('search', searchQuery);
       if (selectedCategory) params.append('category', selectedCategory);
-      
+
       const response = await fetch(`/api/products?${params}`);
       const data = await response.json();
-      
+
       if (data.success) {
         let filteredProducts = data.data;
-        
+
         // Client-side filtering for price range
         if (priceRange.min || priceRange.max) {
           filteredProducts = filteredProducts.filter((product: Product) => {
@@ -107,16 +107,16 @@ function ProductsContent() {
             return price >= min && price <= max;
           });
         }
-        
+
         // Client-side filtering for platforms
         if (selectedPlatforms.length > 0) {
           filteredProducts = filteredProducts.filter((product: Product) => {
-            return selectedPlatforms.some(platform => 
+            return selectedPlatforms.some(platform =>
               product.available_on.includes(platform)
             );
           });
         }
-        
+
         setProducts(filteredProducts);
         setTotalPages(data.pagination.pages);
       }
@@ -145,8 +145,8 @@ function ProductsContent() {
   };
 
   const handlePlatformToggle = (platform: string) => {
-    setSelectedPlatforms(prev => 
-      prev.includes(platform) 
+    setSelectedPlatforms(prev =>
+      prev.includes(platform)
         ? prev.filter(p => p !== platform)
         : [...prev, platform]
     );
@@ -173,13 +173,13 @@ function ProductsContent() {
   // List view component
   const ProductListItem = ({ product }: { product: Product }) => {
     const imageSrc = getImageSrc(product);
-    
+
     // Debug logging for list view
     console.log('List view - Product:', product.name);
     console.log('List view - Has image_data:', !!product.image_data);
     console.log('List view - Has image_url:', !!product.image_url);
     console.log('List view - Image src:', imageSrc);
-    
+
     return (
       <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
         <Link href={`/products/${product._id}`} className="block">
@@ -202,7 +202,7 @@ function ProductsContent() {
                   }}
                 />
               ) : null}
-              
+
               <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-100 to-purple-200 ${imageSrc ? 'hidden' : ''}`}>
                 <ShoppingCart className="h-8 w-8 text-purple-400" />
               </div>
@@ -332,11 +332,10 @@ function ProductsContent() {
         <div className="space-y-2 max-h-48 overflow-y-auto">
           <button
             onClick={() => handleCategoryChange('')}
-            className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-              selectedCategory === '' 
-                ? 'bg-purple-100 text-purple-700 font-medium' 
+            className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${selectedCategory === ''
+                ? 'bg-purple-100 text-purple-700 font-medium'
                 : 'hover:bg-gray-100 text-gray-700'
-            }`}
+              }`}
           >
             All Categories
           </button>
@@ -344,11 +343,10 @@ function ProductsContent() {
             <button
               key={category._id}
               onClick={() => handleCategoryChange(category._id)}
-              className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                selectedCategory === category._id 
-                  ? 'bg-purple-100 text-purple-700 font-medium' 
+              className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${selectedCategory === category._id
+                  ? 'bg-purple-100 text-purple-700 font-medium'
                   : 'hover:bg-gray-100 text-gray-700'
-              }`}
+                }`}
             >
               {category.name} ({category.no_of_items})
             </button>
@@ -365,13 +363,13 @@ function ProductsContent() {
             <span>₹{priceRange.min.toLocaleString()}</span>
             <span>₹{priceRange.max.toLocaleString()}</span>
           </div>
-          
+
           {/* Dual Range Slider */}
           <div className="relative">
             {/* Track */}
             <div className="h-2 bg-gray-200 rounded-lg relative">
               {/* Active Range */}
-              <div 
+              <div
                 className="absolute h-2 bg-purple-500 rounded-lg"
                 style={{
                   left: `${(priceRange.min / MAX_PRICE) * 100}%`,
@@ -379,7 +377,7 @@ function ProductsContent() {
                 }}
               />
             </div>
-            
+
             {/* Min Range Input */}
             <input
               type="range"
@@ -396,7 +394,7 @@ function ProductsContent() {
               className="absolute top-0 w-full h-2 bg-transparent appearance-none cursor-pointer slider-thumb"
               style={{ zIndex: 1 }}
             />
-            
+
             {/* Max Range Input */}
             <input
               type="range"
@@ -414,7 +412,7 @@ function ProductsContent() {
               style={{ zIndex: 2 }}
             />
           </div>
-          
+
           {/* Manual Input Fields */}
           <div className="flex gap-2 mt-4">
             <div className="flex-1">
@@ -520,7 +518,7 @@ function ProductsContent() {
           background: transparent;
         }
       `}</style>
-      
+
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
@@ -546,22 +544,20 @@ function ProductsContent() {
               <div className="flex items-center bg-gray-100 rounded-lg p-1 ml-auto">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-md transition-colors ${
-                    viewMode === 'grid'
+                  className={`p-2 rounded-md transition-colors ${viewMode === 'grid'
                       ? 'bg-white text-purple-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
-                  }`}
+                    }`}
                   title="Grid View"
                 >
                   <Grid3X3 className="h-5 w-5" />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-md transition-colors ${
-                    viewMode === 'list'
+                  className={`p-2 rounded-md transition-colors ${viewMode === 'list'
                       ? 'bg-white text-purple-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
-                  }`}
+                    }`}
                   title="List View"
                 >
                   <List className="h-5 w-5" />
@@ -580,16 +576,16 @@ function ProductsContent() {
 
             {/* Products Display */}
             {loading ? (
-              <div className={viewMode === 'grid' 
+              <div className={viewMode === 'grid'
                 ? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
                 : "space-y-4"
               }>
                 {[...Array(12)].map((_, i) => (
-                  <div key={i} className={viewMode === 'grid' 
+                  <div key={i} className={viewMode === 'grid'
                     ? "bg-white rounded-lg shadow-md p-4 animate-pulse"
                     : "bg-white rounded-lg shadow-md p-4 animate-pulse h-32"
                   }>
-                    <div className={viewMode === 'grid' 
+                    <div className={viewMode === 'grid'
                       ? "bg-gray-300 h-48 rounded-lg mb-4"
                       : "flex"
                     }>
@@ -641,24 +637,23 @@ function ProductsContent() {
                     >
                       <ChevronLeft className="h-5 w-5" />
                     </button>
-                    
+
                     {[...Array(totalPages)].map((_, i) => {
                       const page = i + 1;
                       return (
                         <button
                           key={page}
                           onClick={() => handlePageChange(page)}
-                          className={`px-4 py-2 rounded-lg ${
-                            currentPage === page
+                          className={`px-4 py-2 rounded-lg ${currentPage === page
                               ? 'bg-purple-600 text-white'
                               : 'border border-gray-300 hover:bg-gray-50'
-                          }`}
+                            }`}
                         >
                           {page}
                         </button>
                       );
                     })}
-                    
+
                     <button
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}

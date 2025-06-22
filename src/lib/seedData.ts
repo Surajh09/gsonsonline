@@ -54,7 +54,7 @@ const sampleProducts = [
     ],
     category: 'Electronics'
   },
-  
+
   // Fashion
   {
     name: 'Cotton T-Shirt',
@@ -78,7 +78,7 @@ const sampleProducts = [
     ],
     category: 'Fashion & Clothing'
   },
-  
+
   // Home & Kitchen
   {
     name: 'Non-Stick Cookware Set',
@@ -101,7 +101,7 @@ const sampleProducts = [
     ],
     category: 'Home & Kitchen'
   },
-  
+
   // Health & Beauty
   {
     name: 'Face Moisturizer',
@@ -114,7 +114,7 @@ const sampleProducts = [
     ],
     category: 'Health & Beauty'
   },
-  
+
   // Sports & Fitness
   {
     name: 'Yoga Mat',
@@ -132,32 +132,32 @@ const sampleProducts = [
 export async function seedDatabase() {
   try {
     await connectDB();
-    
+
     // Clear existing data
     await Category.deleteMany({});
     await Product.deleteMany({});
-    
+
     console.log('Cleared existing data...');
-    
+
     // Insert categories
     const createdCategories = await Category.insertMany(sampleCategories);
     console.log(`Created ${createdCategories.length} categories`);
-    
+
     // Create a map of category names to IDs
     const categoryMap = new Map();
     createdCategories.forEach(cat => {
       categoryMap.set(cat.name, cat._id);
     });
-    
+
     // Insert products with correct category references
     const productsWithCategoryIds = sampleProducts.map(product => ({
       ...product,
       category: categoryMap.get(product.category)
     }));
-    
+
     const createdProducts = await Product.insertMany(productsWithCategoryIds);
     console.log(`Created ${createdProducts.length} products`);
-    
+
     console.log('Database seeded successfully!');
     return { success: true, message: 'Database seeded successfully!' };
   } catch (error) {
