@@ -2,11 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Product from '@/models/Product';
 import Category from '@/models/Category';
+import { isAdminEnabled } from '@/lib/admin';
 
-// Helper function to check if admin access is enabled
-const isAdminEnabled = () => {
-  return process.env.NEXT_PUBLIC_ADMIN_ENABLED === 'true';
-};
+const ALLOWED_MIME_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp'
+];
 
 export async function GET(request: NextRequest) {
   try {
@@ -60,9 +63,7 @@ export async function POST(request: NextRequest) {
     
     const contentType = request.headers.get('content-type') || '';
     let body: any;
-    let imageData: Buffer | null = null;
-    let imageMimetype: string | null = null;
-    let imageFilename: string | null = null;
+    let images: Array<{ data: Buffer; mimetype: string; filename: string }> = [];
 
     if (contentType.includes('multipart/form-data')) {
       // Handle form data with file upload
@@ -79,32 +80,36 @@ export async function POST(request: NextRequest) {
         image_url: formData.get('image_url') as string,
       };
 
-      // Handle image file
-      const imageFile = formData.get('image_file') as File;
-      if (imageFile && imageFile.size > 0) {
-        // Validate file type
-        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-        if (!allowedTypes.includes(imageFile.type)) {
-          return NextResponse.json(
-            { success: false, error: 'Invalid image type. Only JPEG, PNG, and WebP are allowed.' },
-            { status: 400 }
-          );
-        }
+      // Handle multiple image files
+      const imageFiles = formData.getAll('images') as File[];
+      
+      for (const imageFile of imageFiles) {
+        if (imageFile && imageFile.size > 0) {
+          // Validate file type
+          if (!ALLOWED_MIME_TYPES.includes(imageFile.type)) {
+            return NextResponse.json(
+              { success: false, error: `Invalid type for ${imageFile.name}. Only JPEG, PNG, and WebP are allowed.` },
+              { status: 400 }
+            );
+          }
 
-        // Validate file size (max 5MB)
-        const maxSize = 5 * 1024 * 1024; // 5MB
-        if (imageFile.size > maxSize) {
-          return NextResponse.json(
-            { success: false, error: 'Image size too large. Maximum size is 5MB.' },
-            { status: 400 }
-          );
-        }
+          // Validate file size (max 5MB)
+          const maxSize = 5 * 1024 * 1024; // 5MB
+          if (imageFile.size > maxSize) {
+            return NextResponse.json(
+              { success: false, error: `${imageFile.name} is too large. Maximum size is 5MB.` },
+              { status: 400 }
+            );
+          }
 
-        // Convert file to buffer
-        const arrayBuffer = await imageFile.arrayBuffer();
-        imageData = Buffer.from(arrayBuffer);
-        imageMimetype = imageFile.type;
-        imageFilename = imageFile.name;
+          // Convert file to buffer
+          const arrayBuffer = await imageFile.arrayBuffer();
+          images.push({
+            data: Buffer.from(arrayBuffer),
+            mimetype: imageFile.type,
+            filename: imageFile.name
+          });
+        }
       }
     } else {
       // Handle JSON data
@@ -157,11 +162,13 @@ export async function POST(request: NextRequest) {
       links: links || [],
     };
 
-    // Add image data if uploaded, otherwise use image_url
-    if (imageData) {
-      productData.image_data = imageData;
-      productData.image_mimetype = imageMimetype;
-      productData.image_filename = imageFilename;
+    // Add image data
+    if (images.length > 0) {
+      productData.images = images;
+      // For backward compatibility, also set the first image as the main image
+      productData.image_data = images[0].data;
+      productData.image_mimetype = images[0].mimetype;
+      productData.image_filename = images[0].filename;
     } else if (image_url) {
       productData.image_url = image_url;
     }
@@ -185,6 +192,157 @@ export async function POST(request: NextRequest) {
     console.error('Error creating product:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to create product' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    // Check if admin access is enabled
+    if (!isAdminEnabled()) {
+      return NextResponse.json({ success: false, error: 'Admin access is not enabled' }, { status: 403 });
+    }
+
+    await connectDB();
+    
+    const contentType = request.headers.get('content-type') || '';
+    let body: any;
+    let images: Array<{ data: Buffer; mimetype: string; filename: string }> = [];
+
+    if (contentType.includes('multipart/form-data')) {
+      const formData = await request.formData();
+      
+      body = {
+        _id: formData.get('_id') as string,
+        name: formData.get('name') as string,
+        description: formData.get('description') as string,
+        price: formData.get('price') as string,
+        category: formData.get('category') as string,
+        available_on: JSON.parse(formData.get('available_on') as string || '[]'),
+        links: JSON.parse(formData.get('links') as string || '[]'),
+        image_url: formData.get('image_url') as string,
+      };
+
+      // Handle multiple image files
+      const imageFiles = formData.getAll('images') as File[];
+      
+      for (const imageFile of imageFiles) {
+        if (imageFile && imageFile.size > 0) {
+          // Validate file type
+          if (!ALLOWED_MIME_TYPES.includes(imageFile.type)) {
+            return NextResponse.json(
+              { success: false, error: `Invalid type for ${imageFile.name}. Only JPEG, PNG, and WebP are allowed.` },
+              { status: 400 }
+            );
+          }
+
+          // Validate file size (max 5MB)
+          const maxSize = 5 * 1024 * 1024; // 5MB
+          if (imageFile.size > maxSize) {
+            return NextResponse.json(
+              { success: false, error: `${imageFile.name} is too large. Maximum size is 5MB.` },
+              { status: 400 }
+            );
+          }
+
+          // Convert file to buffer
+          const arrayBuffer = await imageFile.arrayBuffer();
+          images.push({
+            data: Buffer.from(arrayBuffer),
+            mimetype: imageFile.type,
+            filename: imageFile.name
+          });
+        }
+      }
+    } else {
+      body = await request.json();
+    }
+
+    const { _id, name, description, price, category, available_on, links, image_url } = body;
+
+    // Validate input
+    if (!_id || !name || !description || !price || !category) {
+      return NextResponse.json(
+        { success: false, error: 'ID, name, description, price, and category are required' },
+        { status: 400 }
+      );
+    }
+
+    // Find the product
+    const existingProduct = await Product.findById(_id);
+    if (!existingProduct) {
+      return NextResponse.json(
+        { success: false, error: 'Product not found' },
+        { status: 404 }
+      );
+    }
+
+    // Find category
+    let categoryDoc;
+    if (typeof category === 'string' && category.length === 24) {
+      categoryDoc = await Category.findById(category);
+    } else {
+      categoryDoc = await Category.findOne({ name: category });
+    }
+
+    if (!categoryDoc) {
+      return NextResponse.json(
+        { success: false, error: 'Category not found' },
+        { status: 404 }
+      );
+    }
+
+    // Update product
+    const updateData: any = {
+      name,
+      description,
+      price: Number(price),
+      category: categoryDoc._id,
+      available_on: available_on || [],
+      links: links || [],
+    };
+
+    // Update images
+    if (images.length > 0) {
+      updateData.images = images;
+      // For backward compatibility, also set the first image as the main image
+      updateData.image_data = images[0].data;
+      updateData.image_mimetype = images[0].mimetype;
+      updateData.image_filename = images[0].filename;
+      updateData.image_url = undefined; // Clear image_url if using uploaded images
+    } else if (image_url) {
+      updateData.image_url = image_url;
+      updateData.images = []; // Clear images if using image_url
+      updateData.image_data = undefined;
+      updateData.image_mimetype = undefined;
+      updateData.image_filename = undefined;
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      _id,
+      updateData,
+      { new: true }
+    ).populate('category', 'name description');
+
+    // Update category item counts if category changed
+    if (existingProduct.category.toString() !== categoryDoc._id.toString()) {
+      const oldCategoryCount = await Product.countDocuments({ category: existingProduct.category });
+      const newCategoryCount = await Product.countDocuments({ category: categoryDoc._id });
+      
+      await Category.findByIdAndUpdate(existingProduct.category, { no_of_items: oldCategoryCount });
+      await Category.findByIdAndUpdate(categoryDoc._id, { no_of_items: newCategoryCount });
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Product updated successfully',
+      data: updatedProduct
+    });
+  } catch (error) {
+    console.error('Error updating product:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to update product' },
       { status: 500 }
     );
   }

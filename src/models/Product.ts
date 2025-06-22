@@ -12,9 +12,14 @@ export interface IProduct extends Document {
   price: number;
   category: mongoose.Types.ObjectId;
   image_url?: string;
-  image_data?: Buffer; // Store image as bytes
-  image_mimetype?: string; // Store MIME type (e.g., 'image/jpeg', 'image/png')
-  image_filename?: string; // Store original filename
+  image_data?: Buffer;
+  image_mimetype?: string;
+  image_filename?: string;
+  images: Array<{
+    data: Buffer;
+    mimetype: string;
+    filename: string;
+  }>;
   created_at: Date;
   updated_at: Date;
 }
@@ -63,17 +68,28 @@ const ProductSchema = new Schema<IProduct>({
     trim: true
   },
   image_data: {
-    type: Buffer,
-    required: false
+    type: Buffer
   },
   image_mimetype: {
-    type: String,
-    trim: true
+    type: String
   },
   image_filename: {
-    type: String,
-    trim: true
-  }
+    type: String
+  },
+  images: [{
+    data: {
+      type: Buffer,
+      required: true
+    },
+    mimetype: {
+      type: String,
+      required: true
+    },
+    filename: {
+      type: String,
+      required: true
+    }
+  }]
 }, {
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
 });
@@ -82,6 +98,17 @@ const ProductSchema = new Schema<IProduct>({
 ProductSchema.index({ name: 1 });
 ProductSchema.index({ category: 1 });
 ProductSchema.index({ price: 1 });
-ProductSchema.index({ name: 'text', description: 'text' });
+ProductSchema.index({ created_at: -1 });
 
-export default mongoose.models.Product || mongoose.model<IProduct>('Product', ProductSchema); 
+// Add a pre-save hook to handle legacy image_url
+ProductSchema.pre('save', function(next) {
+  // If there's an image_url but no images, set it as the legacy image_url only
+  if (this.image_url && (!this.images || this.images.length === 0)) {
+    this.images = [];
+  }
+  next();
+});
+
+const Product = mongoose.models.Product || mongoose.model<IProduct>('Product', ProductSchema);
+
+export default Product; 

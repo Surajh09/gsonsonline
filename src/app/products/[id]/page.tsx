@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, ExternalLink, ShoppingCart, Star, Share2, Heart } from 'lucide-react';
+import { ArrowLeft, ExternalLink, ShoppingCart, Star, Share2, Heart, Edit, Pencil } from 'lucide-react';
+import Image from 'next/image';
 
 interface Product {
   _id: string;
@@ -28,11 +29,14 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (params.id) {
       fetchProduct(params.id as string);
     }
+    // Check if admin mode is enabled
+    setIsAdmin(process.env.NEXT_PUBLIC_ADMIN_ENABLED === 'true');
   }, [params.id]);
 
   const fetchProduct = async (id: string) => {
@@ -93,20 +97,31 @@ export default function ProductDetailPage() {
   const imageSrc = getImageSrc();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 relative">
+      {process.env.NEXT_PUBLIC_ADMIN_ENABLED === 'true' && (
+        <Link
+          href={`/admin/upload?edit=${params.id}`}
+          className="absolute top-4 right-4 p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
+          title="Edit Product"
+        >
+          <Pencil className="h-5 w-5" />
+        </Link>
+      )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Breadcrumb */}
-        <nav className="flex items-center space-x-2 text-sm text-gray-600 mb-8">
-          <Link href="/" className="hover:text-purple-600">Home</Link>
-          <span>/</span>
-          <Link href="/products" className="hover:text-purple-600">Products</Link>
-          <span>/</span>
-          <Link href={`/categories/${product.category._id}`} className="hover:text-purple-600">
-            {product.category.name}
-          </Link>
-          <span>/</span>
-          <span className="text-gray-900">{product.name}</span>
-        </nav>
+        {/* Navigation and Actions */}
+        <div className="flex justify-between items-center mb-8">
+          <nav className="flex items-center space-x-2 text-sm text-gray-600">
+            <Link href="/" className="hover:text-purple-600">Home</Link>
+            <span>/</span>
+            <Link href="/products" className="hover:text-purple-600">Products</Link>
+            <span>/</span>
+            <Link href={`/categories/${product.category._id}`} className="hover:text-purple-600">
+              {product.category.name}
+            </Link>
+            <span>/</span>
+            <span className="text-gray-900">{product.name}</span>
+          </nav>
+        </div>
 
         {/* Back Button */}
         <button

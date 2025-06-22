@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { ExternalLink, ShoppingCart } from 'lucide-react';
+import Image from 'next/image';
+import { useState } from 'react';
 
 interface Product {
   _id: string;
@@ -7,7 +9,14 @@ interface Product {
   description: string;
   price: number;
   image_url?: string;
-  image_data?: any; // Buffer data exists
+  image_data?: Buffer;
+  image_mimetype?: string;
+  image_filename?: string;
+  images?: Array<{
+    data: Buffer;
+    mimetype: string;
+    filename: string;
+  }>;
   available_on: string[];
   links: { platform: string; url: string }[];
   category: {
@@ -21,54 +30,47 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const [imageError, setImageError] = useState(false);
+
   // Determine image source - prioritize uploaded image over URL
   const getImageSrc = () => {
-    if (product.image_data) {
-      // If image is stored as bytes, use the API endpoint to serve it
-      return `/api/images/${product._id}`;
-    } else if (product.image_url) {
-      // If image URL is provided, use it directly
-      return product.image_url;
+    if (!imageError) {
+      if (product.images && product.images.length > 0) {
+        return `/api/images/${product._id}?index=0`;
+      } else if (product.image_data) {
+        return `/api/images/${product._id}`;
+      } else if (product.image_url) {
+        return product.image_url;
+      }
     }
     return null;
   };
 
   const imageSrc = getImageSrc();
 
-  // Debug logging
-  console.log('Product:', product.name);
-  console.log('Has image_data:', !!product.image_data);
-  console.log('Has image_url:', !!product.image_url);
-  console.log('Image src:', imageSrc);
-
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
-      {/* Make the entire card clickable */}
       <Link href={`/products/${product._id}`} className="block">
         {/* Product Image */}
         <div className="relative h-48 bg-gray-100 overflow-hidden">
-          {imageSrc ? (
-            <img
-              src={imageSrc}
-              alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              onLoad={() => {
-                console.log('Image loaded successfully:', imageSrc);
-              }}
-              onError={(e) => {
-                console.error('Image failed to load:', imageSrc);
-                console.error('Error details:', e);
-                // Fallback to default image if loading fails
-                e.currentTarget.style.display = 'none';
-                e.currentTarget.nextElementSibling?.classList.remove('hidden');
-              }}
-            />
-          ) : null}
-          
-          {/* Fallback Image */}
-          <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-100 to-purple-200 ${imageSrc ? 'hidden' : ''}`}>
-            <ShoppingCart className="h-16 w-16 text-purple-400" />
-          </div>
+          {imageSrc && !imageError ? (
+            <div className="relative w-full h-full">
+              <img
+                src={imageSrc}
+                alt={product.name}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                onError={() => {
+                  console.log('Image failed to load:', imageSrc);
+                  setImageError(true);
+                }}
+                loading="lazy"
+              />
+            </div>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-100 to-purple-200">
+              <ShoppingCart className="h-16 w-16 text-purple-400" />
+            </div>
+          )}
           
           {/* Category Badge */}
           <div className="absolute top-3 left-3">
@@ -136,7 +138,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </Link>
 
       {/* Action Buttons - Outside the Link to prevent nested links */}
-      <div className="px-4 pb-4 space-y-2">
+      <div className="p-4 pt-0">
         {product.links && product.links.length > 0 && (
           <div className="space-y-1">
             {product.links.slice(0, 2).map((link, index) => (
